@@ -7,18 +7,14 @@
 (defn -main
 "Hello!"
 [& args]
-(println "Hi!")
-)
+(println "Hi!"))
 
 
 (defn get-heartbeat
-  "I don't do a whole lot yet."
+  "Return true if API heartbeat returns OK"
   []
   (println 
-	(get (json/decode (:body (client/get "https://api.stockfighter.io/ob/api/heartbeat"))) 0)
-
-   )
-)
+    (get (json/decode (:body (client/get "https://api.stockfighter.io/ob/api/heartbeat"))) "ok") ))
 
 
 (get-heartbeat)
