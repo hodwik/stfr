@@ -10,6 +10,8 @@
   (println "Hi!"))
 
 (def venue "TESTEX")
+
+(def baseurl "https://api.stockfighter.io/ob/api/")
  
 
 (defn heartbeat
@@ -22,14 +24,14 @@
   "Return true if Exchance returns OK"
   []
   (println
-    (get (json/decode (:body (client/get (str "https://api.stockfighter.io/ob/api/venues/" venue "/heartbeat")))) 
+    (get (json/decode (:body (client/get (str baseurl "venues/" venue "/heartbeat")))) 
     "ok")))
 
 (defn stocklist
   "Return stocks listed on exchange"
   []
   (println
-    (:body (client/get (str "https://api.stockfighter.io/ob/api/venues/" venue "/stocks")))))
+    (:body (client/get (str baseurl "venues/" venue "/stocks")))))
     
 
 (stocklist)
