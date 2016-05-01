@@ -18,7 +18,8 @@
   "Return true if API heartbeat returns OK"
   []
   (println 
-    (get (json/decode (:body (client/get "https://api.stockfighter.io/ob/api/heartbeat"))) "ok")))
+    (get (json/decode (:body (client/get "https://api.stockfighter.io/ob/api/heartbeat"))) 
+    "ok")))
 
 (defn heartbeatex
   "Return true if Exchance returns OK"
