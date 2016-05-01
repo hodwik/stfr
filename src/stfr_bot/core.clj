@@ -1,6 +1,11 @@
 (ns stfr-bot.core
   (:gen-class)
-  (:require [clj-http.client :as client] [cheshire.core :as json]))
+  (:require 
+     [clj-http.client :as client] 
+     [aleph.http :as http]
+     [manifold.stream :as stream]
+     [clojure.core.async :as async]
+     [cheshire.core :as json]))
 
 
 (defn -main
@@ -8,11 +13,33 @@
   [& args]
   (println "Hi!"))
 
-(def account "AAS20159426")
-(def venue "TESTEX")
-(def stock "FOOBAR")
+(def account "ERS42429778")
+(def venue "MOYLEX")
+(def stock "HAC")
 (def apikey "7325649cff460220c2cc7f9e583dc9d71a23f814")
 (def baseurl "https://api.stockfighter.io/ob/api/")
+(def ws-url "wss://www.stockfighter.io/ob/api/ws/")
+
+
+(defn open-ticker!
+  ([url]
+   (open-ticker! url nil))
+  ([url ch]
+   (let [conn (stream/transform (map #(json/parse-string % true)) @(http/websocket-client url))
+         ch (or ch (async/chan 10))]
+     (stream/connect conn ch)
+     ch)))
+     
+(defn quotes-ticker!
+  ([account venue & [stock {chan :channel}]]
+   (let [url (str ws-url account "/venues/" venue "/tickertape" (when stock (str "/stocks/" stock)))]
+     (open-ticker! url chan))))
+
+(defn execs-ticker!
+  ([account venue & [stock {chan :channel}]]
+   (let [url (str ws-url account "/venues/" venue "/executions" (when stock (str "/stocks/" stock)))]
+     (open-ticker! url chan))))
+ 
  
 
 (defn heartbeat
@@ -43,14 +70,12 @@
 
 
 
-
-
-
 (def packjson
   {     :account account
         :venue venue
         :stock stock
         :qty 100
+        :direction "buy"
         :orderType "market"})
 
 (defn api-request [method body]
@@ -61,4 +86,12 @@
        :content-type "json"
        :body (client/json-encode body)}))
 
-(println (api-request :post packjson))
+;;(println (api-request :post packjson))
+
+(def ticker (quotes-ticker! account venue))
+(loop [x 100]
+  (when (> x 1)
+  (println (async/<!! ticker))
+  (recur (- x 1)))) 
+
+(async/close! ticker) 
