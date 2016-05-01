@@ -12,7 +12,7 @@
 
 
 (defn get-heartbeat
-  "I don't do a whole lot ... yet."
+  "I don't do a whole lot yet."
   []
   (println 
 	(get (json/decode (:body (client/get "https://api.stockfighter.io/ob/api/heartbeat"))) 0)
