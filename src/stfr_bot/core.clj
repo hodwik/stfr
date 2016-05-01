@@ -10,7 +10,7 @@
   (println "Hi!"))
 
 (def venue "TESTEX")
-
+(def stock "FOOBAR")
 (def baseurl "https://api.stockfighter.io/ob/api/")
  
 
@@ -34,5 +34,11 @@
   (println
     (:body (client/get (str baseurl "venues/" venue "/stocks")))))
     
+(def orderbook
+  "Return current orders for stock"
+  []
+  (println
+    (client/get (str baseurl "venues/" venue "/stocks/" stock))))
 
-(stocklist)
+
+(orderbook)
