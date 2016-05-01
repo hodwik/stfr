@@ -9,8 +9,10 @@
   [& args]
   (println "Hi!"))
 
-(def venue "TESTEX")
-(def stock "FOOBAR")
+(def account "MFB34331494")
+(def venue "HEH")
+(def stock "WTEOEX")
+(def apikey "7325649cff460220c2cc7f9e583dc9d71a23f814")
 (def baseurl "https://api.stockfighter.io/ob/api/")
  
 
@@ -34,11 +36,33 @@
   (println
     (:body (client/get (str baseurl "venues/" venue "/stocks")))))
     
-(def orderbook
+(defn orderbook
   "Return current orders for stock"
   []
   (println
     (client/get (str baseurl "venues/" venue "/stocks/" stock))))
 
 
-(orderbook)
+
+
+
+
+(defn packjson
+  []
+  (println (json/generate-string {:headers {:X-Starfighter-Authorization apikey} 
+        :body { :account account
+                :venue venue
+                :stock stock
+                :qty 100
+                :orderType "market"}
+           })
+                
+        ))
+        
+(defn marketorder
+  "Get 100 shares"
+  []
+  (client/post (str baseurl "venues/" venue "/stocks/" stock) (packjson)
+   )) 
+
+(println (marketorder))
