@@ -1,4 +1,3 @@
-
 (ns stfr-bot.core
   (:gen-class)
   (:require [clj-http.client :as client] [cheshire.core :as json]))
@@ -9,9 +8,9 @@
   [& args]
   (println "Hi!"))
 
-(def account "MFB34331494")
-(def venue "HEH")
-(def stock "WTEOEX")
+(def account "AAS20159426")
+(def venue "TESTEX")
+(def stock "FOOBAR")
 (def apikey "7325649cff460220c2cc7f9e583dc9d71a23f814")
 (def baseurl "https://api.stockfighter.io/ob/api/")
  
@@ -47,22 +46,19 @@
 
 
 
-(defn packjson
-  []
-  (println (json/generate-string {:headers {:X-Starfighter-Authorization apikey} 
-        :body { :account account
-                :venue venue
-                :stock stock
-                :qty 100
-                :orderType "market"}
-           })
-                
-        ))
-        
-(defn marketorder
-  "Get 100 shares"
-  []
-  (client/post (str baseurl "venues/" venue "/stocks/" stock) (packjson)
-   )) 
+(def packjson
+  {     :account account
+        :venue venue
+        :stock stock
+        :qty 100
+        :orderType "market"})
 
-(println (marketorder))
+(defn api-request [method body]
+    (client/request
+      {:method method
+       :url (str baseurl "venues/" venue "/stocks/" stock "/orders")
+       :headers {"X-Starfighter-Authorization" apikey} 
+       :content-type "json"
+       :body (client/json-encode body)}))
+
+(println (api-request :post packjson))
