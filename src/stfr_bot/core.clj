@@ -13,17 +13,15 @@
   [& args]
   (println "Hi!"))
 
-(def account "ERS42429778")
-(def venue "MOYLEX")
-(def stock "HAC")
+(def account "CAE95302354")
+(def venue "IGMCEX")
+(def stock "LTIM")
 (def apikey "7325649cff460220c2cc7f9e583dc9d71a23f814")
 (def baseurl "https://api.stockfighter.io/ob/api/")
 (def ws-url "wss://www.stockfighter.io/ob/api/ws/")
 
 
 (defn open-ticker!
-  ([url]
-   (open-ticker! url nil))
   ([url ch]
    (let [conn (stream/transform (map #(json/parse-string % true)) @(http/websocket-client url))
          ch (or ch (async/chan 10))]
